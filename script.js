@@ -14,6 +14,7 @@ var Game = { // easier management of the game vars
   veloH: 0, // horizontal velocity in meters per sec
   veloY: 0, // vertical velocity in meters per sec
   weight: 0, // weight in grams
+  ballThrown: false,
   potential: {
     vH: 0,
     vY: 0
@@ -21,8 +22,11 @@ var Game = { // easier management of the game vars
 }
 
 function throwBall(h, y) {
+  ballThrown = true
   Game.veloH = h
   Game.veloY = y
+  Game.potential.vH = 0
+  Game.potential.vY = 0
 }
 
 function load() {
@@ -30,9 +34,36 @@ function load() {
   Game = savegame
 }
 
+function draw() {
+  ut("bT", Game.ballType)
+  ut("cD", br(Game.currD, 3) + " meters")
+  ut("cY", br(Game.currY, 3) + " meters")
+  ut("vH", br(Game.veloH, 3) + " meters per second")
+  ut("vY", br(Game.veloY, 3) + " meters per second")
+
+  ut("pvH", Game.potential.vH.toString().padStart("0", 8) + " meters per second")
+  ut("pvY", Game.potential.vY.toString().padStart("0", 8) + " meters per second")
+}
+
 window.setInterval(function() {
-  Game.currD += Game.veloH
-  Game.currY += Game.veloY
+  if (Game.ballThrown) {
+    Game.currD += Game.veloH
+    Game.currY += Game.veloY
+    Game.veloH -= 1/20
+    Game.veloY -= 3/20
+  }
+  if (Game.currY < 0.05) {
+    Game.ballThrown = false
+  }
+
+  
+  Game.potential.vH += 1/20
+  Game.potential.vY += 1/20
+  Game.potential.vH = br(Game.potential.vH, 3)
+  Game.potential.vY = br(Game.potential.vY, 3)
+  Game.currD = 0
+  Game.currY = 0
+  draw()
 }, 50)
 
 window.setInterval(function() {

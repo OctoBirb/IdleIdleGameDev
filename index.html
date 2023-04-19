@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" href="style.css">
   <title>Irc Samulator</title>
+  <script src="octoqol.js"></script>
 </head>
 
 <body>
@@ -14,23 +15,23 @@
     </tr>
     <tr>
       <td>Material</td>
-      <td>[ballType]</td>
+      <td id="bT">[ballType]</td>
     </tr>
     <tr>
       <td>Distance</td>
-      <td>[currD]</td>
+      <td id="cD">[currD]</td>
     </tr>
     <tr>
       <td>Altitude</td>
-      <td>[currY]</td>
+      <td id="cY">[currY]</td>
     </tr>
     <tr>
       <td>X-Velocity</td>
-      <td>[veloH]</td>
+      <td id="vH">[veloH]</td>
     </tr>
     <tr>
       <td>Y-Velocity</td>
-      <td>[veloY]</td>
+      <td id="vY">[veloY]</td>
     </tr>
     <tr>
       <th>Potential</th>
@@ -38,13 +39,15 @@
     </tr>
     <tr>
       <td>Potential X-Velocity</td>
-      <td>[potential.vH]</td>
+      <td id="pvH">[potential.vH]</td>
     </tr>
     <tr>
       <td>Potential Y-Velocity</td>
-      <td>[potential.vY]</td>
+      <td id="pvY">[potential.vY]</td>
     </tr>
   </table>
+  <br>
+  <button onclick="throwBall(Game.potential.vH, Game.potential.vY)">Launch the sphere</button>
   <script src="script.js"></script>
 </body>
 
