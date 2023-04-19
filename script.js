@@ -20,7 +20,7 @@ var Game = { // easier management of the game vars
   }
 }
 
-function throwBall(h,y) {
+function throwBall(h, y) {
   Game.veloH = h
   Game.veloY = y
 }
@@ -31,7 +31,8 @@ function load() {
 }
 
 window.setInterval(function() {
-  
+  Game.currD += Game.veloH
+  Game.currY += Game.veloY
 }, 50)
 
 window.setInterval(function() {
