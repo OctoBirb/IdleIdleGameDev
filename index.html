@@ -12,10 +12,12 @@
     <tr>
       <th>Label</th>
       <th>Value</th>
+      <th>Upgrade</th>
     </tr>
     <tr>
       <td>Material</td>
       <td id="bT">[ballType]</td>
+      <td><button onclick="prestige()" id="prestigeButton">Prestige (needs to reach 84.83M meters)</button></td>
     </tr>
     <tr>
       <td>Distance</td>
@@ -26,12 +28,28 @@
       <td id="cY">[currY]</td>
     </tr>
     <tr>
+      <td>Best Distance</td>
+      <td id="bD">[bestD]</td>
+    </tr>
+    <tr>
+      <td>Best Altitude</td>
+      <td id="bY">[bestY]</td>
+    </tr>
+    <tr>
       <td>X-Velocity</td>
       <td id="vH">[veloH]</td>
     </tr>
     <tr>
       <td>Y-Velocity</td>
       <td id="vY">[veloY]</td>
+    </tr>
+    <tr>
+      <td>Best X-Velocity</td>
+      <td id="bvH">[bestVH]</td>
+    </tr>
+    <tr>
+      <td>Best Y-Velocity</td>
+      <td id="bvY">[bestVY]</td>
     </tr>
     <tr>
       <th>Potential</th>
@@ -46,6 +64,11 @@
       <td id="pvY">[potential.vY]</td>
     </tr>
   </table>
+  <br>
+  <b id="scaleT">Scale: </b>
+  <br>
+  <canvas id="visual" width="500" height="100"></canvas>
+  <input type="range" name="scale" id="scale" min="0" max="7" step="0.05">
   <br>
   <button onclick="throwBall(Game.potential.vH, Game.potential.vY)">Launch the sphere</button>
   <script src="script.js"></script>

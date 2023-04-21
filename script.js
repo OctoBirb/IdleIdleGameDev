@@ -8,25 +8,44 @@
 
 var savegame // the savegame
 var Game = { // easier management of the game vars
-  ballType: "Styrofoam",
+  materials: ["Styrofoam", "Aluminium", "Steel", "Tungsten"],
+  materialWeight: [17, 40, 131, 325],
+  ballType: 0,
   currD: 0, // current distance in meters
   currY: 0, // current altitude in meters
   veloH: 0, // horizontal velocity in meters per sec
   veloY: 0, // vertical velocity in meters per sec
-  weight: 0, // weight in grams
+  bestD: 0, // best distance in meters
+  bestY: 0, // best altitude in meters
+  bestVH: 0,
+  bestVY: 0,
   ballThrown: false,
   potential: {
     vH: 0,
-    vY: 0
+    vY: 0,
+    ivH: 0.05,
+    ivY: 0.05
   }
 }
 
+Game.currMat = Game.materials[Game.ballType]
+Game.weight = Game.materialWeight[Game.ballType]
+
+var canvas = document.getElementById("visual");
+var c = canvas.getContext("2d");
+var scale = 1 / (10 ** ie('scale').valueAsNumber)
+let oldScale = 1 / (10 ** ie('scale').valueAsNumber)
+
 function throwBall(h, y) {
   ballThrown = true
+  Game.currD = 0
+  Game.currY = 0
   Game.veloH = h
   Game.veloY = y
   Game.potential.vH = 0
   Game.potential.vY = 0
+  c.fillStyle = "#000000"
+  c.fillRect(0, 0, 500, 100)
 }
 
 function load() {
@@ -34,35 +53,68 @@ function load() {
   Game = savegame
 }
 
+function checkScale() {
+  if (scale != oldScale) {
+    c.fillStyle = "#000000"
+    c.fillRect(0, 0, 500, 100)
+    oldScale = scale
+  } else {
+    oldScale = scale
+  }
+}
+
 function draw() {
-  ut("bT", Game.ballType)
+  ut("bT", Game.currMat)
   ut("cD", br(Game.currD, 3) + " meters")
   ut("cY", br(Game.currY, 3) + " meters")
-  ut("vH", br(Game.veloH, 3) + " meters per second")
-  ut("vY", br(Game.veloY, 3) + " meters per second")
+  ut("bD", br(Game.bestD, 3) + " meters")
+  ut("bY", br(Game.bestY, 3) + " meters")
+  ut("vH", br(Game.veloH * 20, 3) + " meters per second")
+  ut("vY", br(Game.veloY * 20, 3) + " meters per second")
+  ut("bvH", br(Game.bestVH * 20, 3) + " meters per second")
+  ut("bvY", br(Game.bestVY * 20, 3) + " meters per second")
 
-  ut("pvH", Game.potential.vH.toString().padStart("0", 8) + " meters per second")
-  ut("pvY", Game.potential.vY.toString().padStart("0", 8) + " meters per second")
+  ut("pvH", br(Game.potential.vH * 20,1).toString() + " meters per second")
+  ut("pvY", br(Game.potential.vY * 20,1).toString() + " meters per second")
+
+  ut("scaleT", `Scale: ${br(10 ** (ie('scale').valueAsNumber + 2) * 5, 0)}x${br(10 ** (ie('scale').valueAsNumber + 2), 0)} meters view`)
+
+  c.fillStyle = `hsl(${Game.currD}, 100%, 50%)`
+  c.fillRect(Game.currD * scale, (100 - (Game.currY * scale)), 2, 2)
+  c.fillStyle = "#7f7f7f"
+  c.fillRect(84852813 * scale, 0, 500, 100)
+  c.fillStyle = "#ffffff"
+  c.fillRect(1000 * scale, 480, 2, 20)
+  c.fillRect(10000 * scale, 480, 2, 20)
+  c.fillRect(100000 * scale, 480, 2, 20)
+  c.fillRect(1000000 * scale, 480, 2, 20)
+
+  checkScale()
 }
 
 window.setInterval(function() {
-  if (Game.ballThrown) {
-    Game.currD += Game.veloH
-    Game.currY += Game.veloY
-    Game.veloH -= 1/20
-    Game.veloY -= 3/20
+  scale = 1 / (10 ** ie('scale').valueAsNumber)
+  Game.currY += Game.veloY
+  Game.currD += Game.veloH
+  Game.veloY -= Game.weight / 100
+
+  if ((Game.currY < 0 || Game.veloH < 0) && !Game.ballThrown) {
+    Game.veloH = 0
+    Game.veloY = 0
   }
-  if (Game.currY < 0.05) {
+
+  if (Game.currY <= 0 && Game.currD <= 0) {
     Game.ballThrown = false
   }
 
-  
-  Game.potential.vH += 1/20
-  Game.potential.vY += 1/20
+  Game.potential.vH += Game.potential.ivH
+  Game.potential.vY += Game.potential.ivY
   Game.potential.vH = br(Game.potential.vH, 3)
   Game.potential.vY = br(Game.potential.vY, 3)
-  Game.currD = 0
-  Game.currY = 0
+  Game.bestD = Math.max(Game.bestD, Game.currD)
+  Game.bestY = Math.max(Game.bestY, Game.currY)
+  Game.bestVH = Math.max(Game.bestVH, Game.veloH)
+  Game.bestVY = Math.max(Game.bestVY, Game.veloY)
   draw()
 }, 50)
 
